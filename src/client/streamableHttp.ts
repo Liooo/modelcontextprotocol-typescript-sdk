@@ -340,12 +340,14 @@ export class StreamableHTTPClientTransport implements Transport {
               if (replayMessageId !== undefined && isJSONRPCResponse(message)) {
                 message.id = replayMessageId;
               }
+              console.log("onmessage")
               this.onmessage?.(message);
             } catch (error) {
               this.onerror?.(error as Error);
             }
           }
         }
+        
       } catch (error) {
         // Handle stream errors - likely a network disconnect
         this.onerror?.(new Error(`SSE stream disconnected: ${error}`));
@@ -372,6 +374,7 @@ export class StreamableHTTPClientTransport implements Transport {
       }
     };
     processStream();
+    console.log('aa')
   }
 
   async start() {
@@ -411,7 +414,7 @@ export class StreamableHTTPClientTransport implements Transport {
 
       if (resumptionToken) {
         // If we have at last event ID, we need to reconnect the SSE stream
-        this._startOrAuthSse({ resumptionToken, replayMessageId: isJSONRPCRequest(message) ? message.id : undefined }).catch(err => this.onerror?.(err));
+        await this._startOrAuthSse({ resumptionToken, replayMessageId: isJSONRPCRequest(message) ? message.id : undefined }).catch(err => this.onerror?.(err));
         return;
       }
 

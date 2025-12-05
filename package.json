@@ -47,6 +47,10 @@
     "dist"
   ],
   "scripts": {
+    "do-server": "bun --watch ./src/run-server.ts",
+    "do-client": "bun ./src/run-client.ts",
+    "do": "tsx ./src/run.ts",
+    "do-ai": "tsx ./src/run-ai.ts",
     "fetch:spec-types": "curl -o spec.types.ts https://raw.githubusercontent.com/modelcontextprotocol/modelcontextprotocol/refs/heads/main/schema/draft/schema.ts",
     "build": "npm run build:esm && npm run build:cjs",
     "build:esm": "mkdir -p dist/esm && echo '{\"type\": \"module\"}' > dist/esm/package.json && tsc -p tsconfig.prod.json",
@@ -62,6 +66,7 @@
     "client": "tsx src/cli.ts client"
   },
   "dependencies": {
+    "ai": "4.3.16",
     "ajv": "^6.12.6",
     "content-type": "^1.0.5",
     "cors": "^2.8.5",
@@ -72,11 +77,11 @@
     "express-rate-limit": "^7.5.0",
     "pkce-challenge": "^5.0.0",
     "raw-body": "^3.0.0",
-    "zod": "^3.23.8",
     "zod-to-json-schema": "^3.24.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.8.0",
+    "@hono/node-server": "^1.19.6",
     "@jest-mock/express": "^3.0.0",
     "@types/content-type": "^1.1.8",
     "@types/cors": "^2.8.17",
@@ -89,13 +94,15 @@
     "@types/supertest": "^6.0.2",
     "@types/ws": "^8.5.12",
     "eslint": "^9.8.0",
+    "hono": "^4.10.7",
     "jest": "^29.7.0",
     "supertest": "^7.0.0",
     "ts-jest": "^29.2.4",
     "tsx": "^4.16.5",
     "typescript": "^5.5.4",
     "typescript-eslint": "^8.0.0",
-    "ws": "^8.18.0"
+    "ws": "^8.18.0",
+    "zod": "^3.23.8"
   },
   "resolutions": {
     "strip-ansi": "6.0.1"
