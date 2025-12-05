@@ -34,6 +34,7 @@ const eventStore: EventStore = {
     return eventId; // return eventID
   },
   replayEventsAfter: async (lastEventId, { send }) => {
+    console.log('replay!!!')
     if (!events[lastEventId]) {
       throw new McpServerJsonRPCError({
         jsonrpc: '2.0',

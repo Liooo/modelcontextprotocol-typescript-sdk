@@ -14,7 +14,6 @@ import { exit } from 'process';
 const resume = ({
   onprogress,
   resume,
-  timeout = 10000,
 }: {
   onprogress?: ProgressCallback;
   resume: { type: 'resumability'; resumptionToken: string };
@@ -75,6 +74,7 @@ const resume = ({
     };
 
     // any method triggers resumption internally, when resumptionToken is specified
+    console.log('sendiing')
     transport
       .send([], { resumptionToken: resume.resumptionToken })
       .then(() => {
@@ -91,8 +91,8 @@ const resume = ({
 const toolCall = async ({ onprogress }: { onprogress?: ProgressCallback }) =>
   client.callTool(
     {
-      name: 'long',
-      arguments: { count: 3 },
+      name: 'long_running',
+      arguments: { input_seconds: '10' },
       _meta: { progressToken: 'my-progress-token' },
     },
     CallToolResultSchema,
@@ -109,15 +109,24 @@ const onprogress: ProgressCallback = (p) => {
   console.log('progress:', p);
 };
 
-const url = 'http://localhost:9999/mcp';
+// const url = 'http://localhost:9999/mcp';
+const workspaceId = '55e8e9a5-2820-48d0-b98e-2c9be05e8412'
+const url = `http://localhost:8001/api/v2/workspaces/${workspaceId}/mcp`
+
 const client = new Client({
   name: 'streamable-http-client',
   version: '1.0.0',
 });
 
+const token = 'eyJhbGciOiJFZERTQSIsImtpZCI6InBYa2RDbFJXd0kwUVROSHUwaUFtNEozM1pyem95cktTIn0.eyJuYW1lIjoicnlvLnkrMSIsImVtYWlsIjoicnlvLnkrMUBjYXJub3QuYWkiLCJlbWFpbFZlcmlmaWVkIjpmYWxzZSwiaW1hZ2UiOm51bGwsImNyZWF0ZWRBdCI6IjIwMjUtMTItMDFUMTA6Mjk6MTUuOTA0WiIsInVwZGF0ZWRBdCI6IjIwMjUtMTItMDFUMTA6Mjk6MTUuOTA0WiIsInJvbGUiOiJ1c2VyIiwiYmFubmVkIjpmYWxzZSwiYmFuUmVhc29uIjpudWxsLCJiYW5FeHBpcmVzIjpudWxsLCJpZCI6IkhFZDhZYWhxZXR3TTNrUXM2dzd2TmhqV2R0cE9MSFdkIiwiaWF0IjoxNzY0OTAzOTQ0LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjMwMDEiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjMwMDEiLCJleHAiOjE3NjUxMzA3MjcsInN1YiI6IkhFZDhZYWhxZXR3TTNrUXM2dzd2TmhqV2R0cE9MSFdkIn0.xJXyr1-Pvzqs3IfyE1a7pOoWeZrrhieOeC_aoShdURZMOxmvEwf_eqMOVOfkI1btcd7aBjOEbJPImVBZGw1eCg'
 const transport = new StreamableHTTPClientTransport(new URL(url), {
+  requestInit: {
+    headers: {
+      Authorization: `Bearer ${token}`, "Authorization-Type": "JWT"
+    },
+  },
   fetch: (u, i) => {
-    console.log('-----');
+    console.log('-----FETCH');
     console.log(i);
     return fetch(u, i);
   },
